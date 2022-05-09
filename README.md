@@ -90,9 +90,9 @@ pd.crosstab(df.GENDER,df.SUFFICIENT_INCOME, normalize=True).plot(kind="bar")
 
  <img src="images/income.png" width="300"/>
  
-Because it is a binary question: HOW SUFFICIENT IS YOUR INCOME TO COVER BASIC LIFE EXPENSES? 
+It is a binary question: HOW SUFFICIENT IS YOUR INCOME TO COVER BASIC LIFE EXPENSES? 
 
-So, according to the graph, It shows that women rates are higher than those of male. 
+According to the graph, It shows that women rates are higher than those of male. 
 
 It could be because of 2 potential reasons:
 1. More females anticipating than males
