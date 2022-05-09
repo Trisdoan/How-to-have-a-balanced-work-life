@@ -13,6 +13,9 @@ I refered to this github: https://github.com/taufiqbashori/wellbeing-regression/
 
 ## IMPORT LIBRARIES & DATASET
 
+As usual, I used pandas to input data from csv. 
+
+In order to display all columns, I used this line of code: **pd.pandas.set_option("display.max_column",None)**.
 ```python
 import pandas as pd
 import numpy as np
@@ -28,7 +31,9 @@ df = data.copy()
 
 ### Transfer non-numeric datatype into numeric
 
-I used to_numeric of pandas to transform. There are nulls so I used parameter: errors="coerce"
+When inspecting the data, I found that feature DAILY_STRESS was in wrong datatype, object instead of numerical type.
+
+So I used **to_numeric** of pandas to transform. There are nulls so I used **parameter: errors="coerce"**
 
 ```python
 # using to_numeric with errors = coerce to transfer non-numeric into nan
@@ -37,7 +42,7 @@ df.DAILY_STRESS = pd.to_numeric(df.DAILY_STRESS,errors="coerce")
  
 ### Fill daily_stress with median
 
-There are not too much nills in this column. I used common approach "median" to replace those nulls
+There are not too much nills in this column(below 10%). I used common approach **"median"** to replace those nulls
 
 ```python
 #Check null or not
@@ -47,36 +52,34 @@ df.DAILY_STRESS.isnull().sum()
 df.DAILY_STRESS.fillna(df.DAILY_STRESS.median(), inplace=True)
  ```
 
-### Check distribution
 
-Most of features are not normal distrbuted. There are 2 binary distribution: sufficient income and BMI_range
 
-```python
-
-df.hist(figsize=(20,20))
-
- ```
- 
- 
  ### Categorical exploration
 
 
-Seems like most people are from 21 to 50 anticipated in the survey. More female than male
 
 ```python
 # Gender and Age
 pd.crosstab(df.GENDER,df.AGE, normalize=True).plot(kind="bar")
  ```
+ <img src="images/gender.png" width="300"/>
+ 
+=> According to the bar graph, It shows that most people were from 21 to 50 anticipating in the survey. There are more females than males
 
 
-
-Again, rate of female is higher than male. It's also because of higher number of female anticipating
 
 ```python
 # BMI and gender
 pd.crosstab(df.GENDER,df.BMI_RANGE, normalize=True).plot(kind="bar")
  ```
  
+ <img src="images/Bmi.png" width="300"/>
+
+ 
+ => It shows that both male and female anticipants have Body Mass Index(BMI) below 21, but not equal. Female rates are higher than those of male.
+ 
+ However, it's hard to make a consumption.
+
  
 
 ```python
@@ -85,18 +88,39 @@ pd.crosstab(df.GENDER,df.BMI_RANGE, normalize=True).plot(kind="bar")
 pd.crosstab(df.GENDER,df.SUFFICIENT_INCOME, normalize=True).plot(kind="bar")
  ```
 
+ <img src="images/income.png" width="300"/>
+ 
+Because it is a binary question: HOW SUFFICIENT IS YOUR INCOME TO COVER BASIC LIFE EXPENSES? 
+
+So, according to the graph, It shows that women rates are higher than those of male. 
+
+It could be because of 2 potential reasons:
+1. More females anticipating than males
+2. Females care about finance than males. Because those guys either make less money or give their partners their money :)
+ 
 ## PREDICTION MODEL
 
 ### Feature Transformation & Selection
 
 #### Replace values for easy understanding
 
+In this step, I replaced 2 binary features: BMI_RANGE AND SUFFICIENT_INCOME for intuitive understanding.
+1. BMI was replaced by BMI < 25(index below 25 means thinner) and BMI > 25
+2. SUFFICIENT_INCOME was replaced by Not or hardly sufficient and sufficient, meaning how the anticipants felt about their income
+
 ```python
+#BMI_RANGE
 df.BMI_RANGE.replace({1: "BMI < 25", 2: "BMI > 25"}, inplace=True)
+
+#SUFFICIENT_INCOME
 df.SUFFICIENT_INCOME.replace({1: "Not or hardly sufficient", 2: "Sufficient"}, inplace=True)
  ```
 
 #### Get dummies categorical features
+
+In this step, I used **get_dummies** to transform the categorical features for machine learning.
+
+I dropoed the first column to avoid redundancy.
 
 ```python
 BMI = pd.get_dummies(df.BMI_RANGE,drop_first=True)
@@ -107,6 +131,8 @@ GENDER = pd.get_dummies(df.GENDER,drop_first=True)
  
  
 #### DROP unessarry columns
+
+Then I dropped unnecessary columns.
 
 ```python
 df.drop(["Timestamp","GENDER","BMI_RANGE","SUFFICIENT_INCOME","AGE"],axis=1,inplace=True)
@@ -121,6 +147,10 @@ df = pd.concat([df, BMI, INCOME, AGE, GENDER],axis=1)
 #### Skewness transformation
 
 ##### Check skewness 
+
+In this step, I visualized to see how skewness my features were.
+
+Any features had skewness above 0.25, then those were considered highly skewed. 
 
 ```python
 skewness_dict = {}
@@ -153,8 +183,14 @@ plot.set_title("Feature Skewness ", fontsize = 16)
 plot.set_xlabel("Features", fontsize = 12)
 plot.set_ylabel("Skewness", fontsize = 12)
  ```
+ 
+<img src="images/feature skewness.png" width="500"/>
+ 
+=> According to the graph, there were 8 highly skewed features, which needed to be transformed.
 
 ##### Transform skewness data using yeo-johnson
+
+In order to transform the skewed features, I used yeo-johnson in scipy to do the magic job.
 
 ```python
 from scipy import stats
@@ -166,10 +202,11 @@ for col in x_1[:8]:
     parameters_skew[col+"_transformed"] = parameters
 
 transformed_df = pd.DataFrame(transformed_skew)
-transformed_df.head()
  ```
 
 ##### Re-check skewness
+
+After skewing the feature, let's visualize to see how it worked.
 
 ```python
 skewness_dict_transformed = {}
@@ -200,17 +237,11 @@ plot.set_xlabel("Features", fontsize = 12)
 plot.set_ylabel("Skewness", fontsize = 12)
  ```
 
-#### Split into 2 datasets
+<img src="images/re check skew.png" width="500"/>
 
-```python
-# skewed_df
-skewed_df = pd.concat((df.drop(columns = [col for col in x_1[:8]]),transformed_df), axis=1)
-skewed_df
 
-#non_skew_df
-df
- ```
 
+ 
 
 ### Check Multicollinearity by VIF
 
@@ -218,12 +249,14 @@ df
 import statsmodels.api as sm
 from scipy import stats
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+
 # def calc VIF
 def cal_vif(X):
     vif = pd.DataFrame()
     vif["VIF Factor"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
     vif["features"] = X.columns
     return vif
+    
 # vif for non_skew df
 vif_df = cal_vif(df.drop(columns = "WORK_LIFE_BALANCE_SCORE"))
 vif_df.sort_values(by="VIF Factor", ascending=False)
@@ -259,23 +292,18 @@ vif_skewed_df_2.sort_values(by="VIF Factor", ascending=False)
 
 ## Train model
 
-### Create X and Y for 2 datasets
+### Create X and Y
 
 ```python
 # preprocessing
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split
 
-x_1 = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS", "TODO_COMPLETED", 
+x = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS", "TODO_COMPLETED", 
                                     "SOCIAL_NETWORK", "FRUITS_VEGGIES","WEEKLY_MEDITATION",
                                     "SUPPORTING_OTHERS", "PERSONAL_AWARDS"], axis=1)
-y_1 = df.WORK_LIFE_BALANCE_SCORE
+y = df.WORK_LIFE_BALANCE_SCORE
 
-x_2 = skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS_transformed", "ACHIEVEMENT_transformed", 
-                                    "SOCIAL_NETWORK", "FLOW_transformed","TODO_COMPLETED_transformed",
-                                    "FRUITS_VEGGIES", "TIME_FOR_PASSION_transformed", "WEEKLY_MEDITATION",
-                                    "SUPPORTING_OTHERS"], axis=1)
-y_2 = skewed_df.WORK_LIFE_BALANCE_SCORE
  ```
  
 
@@ -284,27 +312,27 @@ y_2 = skewed_df.WORK_LIFE_BALANCE_SCORE
 ### Scaling numeric features
 
 ```python
+
 # our scaler
 scaler = MinMaxScaler()
-#scaler = StandardScaler()
 
 # fit the scaler to our data
-numeric_x_1 = x_1.drop(columns = ['BMI > 25', 'Sufficient',
+numeric_x = x.drop(columns = ['BMI > 25', 'Sufficient',
        '36 to 50', '51 or more', 'Less than 20', 'Male'],axis =1 )
 
-scaled_numeric_x_1 = pd.DataFrame(scaler.fit_transform(numeric_x_1), columns = numeric_x_1.columns)
+scaled_numeric_x = pd.DataFrame(scaler.fit_transform(numeric_x), columns = numeric_x.columns)
 
-x_1 = pd.concat((scaled_numeric_x_1,x_1[['BMI > 25', 'Sufficient',
+x = pd.concat((scaled_numeric_x,x[['BMI > 25', 'Sufficient',
        '36 to 50', '51 or more', 'Less than 20', 'Male']]),axis=1)
 # describe the scaled data
-x_1.describe()
+x.describe()
  ```
  
 ### Check R2
 
 ```python
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(x_1, y_1,random_state = 0,test_size=0.25)
+X_train, X_test, y_train, y_test = train_test_split(x, y,random_state = 0,test_size=0.25)
 
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
@@ -390,7 +418,7 @@ residual_df.describe()
 ## Check feature weight: which features drive target variable the most ?
 
 ```python
-reg_summary = pd.DataFrame(x_1.columns.values, columns = ["Features"])
+reg_summary = pd.DataFrame(x.columns.values, columns = ["Features"])
 reg_summary["Weights"] = regr.coef_
 
 # plot bar chart
