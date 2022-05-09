@@ -9,6 +9,8 @@ I refered to this github: https://github.com/taufiqbashori/wellbeing-regression/
 
 # INSIGHTS 
 
+Let
+
 # ANALYTICS PROCESS
 
 ## IMPORT LIBRARIES & DATASET
@@ -239,11 +241,22 @@ plot.set_ylabel("Skewness", fontsize = 12)
 
 <img src="images/re check skew.png" width="500"/>
 
+=> It worked quite well. It reduced the skewness of those featured below 0.25
 
+### Created 2 datasets for orginal df and transformed_df
 
+```python
+# skewed_df
+skewed_df = pd.concat((df.drop(columns = [col for col in x_1[:8]]),transformed_df), axis=1)
+skewed_df
+
+#non_skew_df
+df
+ ```
  
-
 ### Check Multicollinearity by VIF
+
+In order to avoid multicollinearity(possibility of independent variables correlating to each others) when doing multiple linear regression, I used VIF to check.
 
 ```python
 import statsmodels.api as sm
@@ -261,16 +274,23 @@ def cal_vif(X):
 vif_df = cal_vif(df.drop(columns = "WORK_LIFE_BALANCE_SCORE"))
 vif_df.sort_values(by="VIF Factor", ascending=False)
  ```
+<img src="images/non_skew.png" width="400"/>
 
+There are some features that are highly correlated between them(above 5)
 
 ```python
-# vif for non_skew df
+# vif for skew df
 vif_skewed_df = cal_vif(skewed_df.drop(columns = "WORK_LIFE_BALANCE_SCORE"))
 vif_skewed_df.sort_values(by="VIF Factor", ascending=False)
  ```
+<img src="images/skew df.png" width="400"/>
+
+Again, this skewed dataset also has some features that are highly correlated between them.
 
 
 #### Re-calc VIF
+
+With those correlated features, I removed them.
 
 ```python
 # vif for non_skew df which removed columns having VIF above 5.5
@@ -279,60 +299,85 @@ vif_df_2 = cal_vif(df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS", 
                                     "SUPPORTING_OTHERS", "PERSONAL_AWARDS"], axis=1))
 vif_df_2.sort_values(by="VIF Factor", ascending=False)
  ```
+ <img src="images/recal_vif_non_skew.png" width="400"/>
+
+I did the same for skewed dataset.
 
 ```python
-# vif for non_skew df which removed columns having VIF above 5.5
+# vif for skewed df which removed columns having VIF above 5.5
 vif_skewed_df_2 = cal_vif(skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS_transformed", "ACHIEVEMENT_transformed", 
                                     "SOCIAL_NETWORK", "FLOW_transformed","TODO_COMPLETED_transformed",
                                     "FRUITS_VEGGIES", "TIME_FOR_PASSION_transformed", "WEEKLY_MEDITATION",
                                     "SUPPORTING_OTHERS"], axis=1))
 vif_skewed_df_2.sort_values(by="VIF Factor", ascending=False)
  ```
+<img src="images/recal_vif_skew.png" width="400"/>
 
 
 ## Train model
 
-### Create X and Y
+### Create X and Y for 2 datasets
+
+I created predictor features and target feature for orginal dataset(x_1, y_1) and skewed dataset(x_2, y_2).
 
 ```python
 # preprocessing
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split
 
-x = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS", "TODO_COMPLETED", 
+x_1 = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS", "TODO_COMPLETED", 
                                     "SOCIAL_NETWORK", "FRUITS_VEGGIES","WEEKLY_MEDITATION",
                                     "SUPPORTING_OTHERS", "PERSONAL_AWARDS"], axis=1)
-y = df.WORK_LIFE_BALANCE_SCORE
+y_1 = df.WORK_LIFE_BALANCE_SCORE
+
+## skewed dataset
+x_2 = skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS_transformed", "ACHIEVEMENT_transformed", 
+                                    "SOCIAL_NETWORK", "FLOW_transformed","TODO_COMPLETED_transformed",
+                                    "FRUITS_VEGGIES", "TIME_FOR_PASSION_transformed", "WEEKLY_MEDITATION",
+                                    "SUPPORTING_OTHERS"], axis=1)
+y_2 = skewed_df.WORK_LIFE_BALANCE_SCORE
 
  ```
  
 
-
-
 ### Scaling numeric features
 
-```python
+To scale all features into same unit, I used **MinMaxScaler** to transform them.
 
+```python
 # our scaler
 scaler = MinMaxScaler()
 
+
 # fit the scaler to our data
-numeric_x = x.drop(columns = ['BMI > 25', 'Sufficient',
+numeric_x_1 = x_1.drop(columns = ['BMI > 25', 'Sufficient',
        '36 to 50', '51 or more', 'Less than 20', 'Male'],axis =1 )
 
-scaled_numeric_x = pd.DataFrame(scaler.fit_transform(numeric_x), columns = numeric_x.columns)
+scaled_numeric_x_1 = pd.DataFrame(scaler.fit_transform(numeric_x_1), columns = numeric_x_1.columns)
 
-x = pd.concat((scaled_numeric_x,x[['BMI > 25', 'Sufficient',
+x_1 = pd.concat((scaled_numeric_x_1,x_1[['BMI > 25', 'Sufficient',
        '36 to 50', '51 or more', 'Less than 20', 'Male']]),axis=1)
-# describe the scaled data
-x.describe()
+
+
+ # our scaler
+scaler = MinMaxScaler()
+
+# fit the scaler to our data
+numeric_x_2 = x_2.drop(columns = ['BMI > 25', 'Sufficient',
+       '36 to 50', '51 or more', 'Less than 20', 'Male'],axis =1 )
+
+scaled_numeric_x_2 = pd.DataFrame(scaler.fit_transform(numeric_x_2), columns = numeric_x_2.columns)
+
+x_2 = pd.concat((scaled_numeric_x_2,x_2[['BMI > 25', 'Sufficient',
+       '36 to 50', '51 or more', 'Less than 20', 'Male']]),axis=1)
  ```
+ 
  
 ### Check R2
 
 ```python
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(x, y,random_state = 0,test_size=0.25)
+X_train, X_test, y_train, y_test = train_test_split(x_1, y_1,random_state = 0,test_size=0.25)
 
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
@@ -343,18 +388,39 @@ regr = linear_model.LinearRegression()
 regr.fit(X_train,y_train)
 y_pred = regr.predict(X_train)
 
-print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
+print("R squared for orginal dataset: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
  ```
+ => R squared for orginal dataset: 0.9218224459993715
  
+ 
+```python
+X_train, X_test, y_train, y_test = train_test_split(x_2, y_2,random_state = 0,test_size=0.25)
+
+regr = linear_model.LinearRegression()
+regr.fit(X_train,y_train)
+y_pred = regr.predict(X_train)
+
+print("R squared for skewed dataset: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
+ ```
+ => R squared for skewed dataset: 0.8648375006226039
+ 
+**=> I decided to used original dataset when it explained 92% of variation around its mean better than skewed dataset**.
+
 ### Chech Multivariate Normality
+
+I plotted a scatter graph to check how residuals are distributed: is it normally distributted ?
 
 ```python
 residuals = y_train.values - y_pred
-
+# Plot the residual
 p = sns.distplot(residuals,kde=True)
 p = plt.title('Normality of residuals')
  ```
- => Residual distribution is normall distributed. It's good
+ 
+ <img src="images/normality of residual.png" width="400"/>
+
+**=> Residual distribution is normall distributed. It's good!**
+
  
  
 ### Check Homoscedasticity
@@ -366,29 +432,16 @@ plt.xlabel('predicted values')
 plt.ylabel('Residuals')
 p = sns.lineplot([y_pred.min(),y_pred.max()],[0,0],color='blue')
  ```
-=> There is no clear pattern between residuals and predicted values. It's good
 
+<img src="images/homodescity.png" width="400"/>
 
-### Check Homoscedasticity by Goldeld Quantdt test
-
-
-```python
-# H0: Error terms are homoscedastic
-# H1: The Error terms are heteroscedastic
-
-import statsmodels.stats.api as sms
-from statsmodels.compat import lzip
-name = ['F statistic', 'p-value']
-test = sms.het_goldfeldquandt(residuals, X_train)
-lzip(name, test)
- ```
- ('F statistic', 0.9651359360560795), ('p-value', 0.9148329857291659)
-
-=> There is no sufficient evidence to reject the null. It's good
+**=> There is no clear pattern between residuals and predicted values. It's good**
 
 
 
 ## Applying model to test dataset
+
+Then I applied the model to test dataset to evaluate it.
 
 ```python
 pred_y = regr.predict(X_test)
@@ -401,9 +454,14 @@ plt.ylabel('Predicted values', size = 16)
 
 plt.title('Model Trained R Squared ='+ '{number:.3f}'.format(number=R2_test), size = 20)
  ```
-=> Look good!!!
+
+<img src="images/model.png" width="400"/>
+
+**=> It explained 91% test dataset. Look good!!!**
+
 
 ### Check residuals
+
 ```python
 residual_df = pd.DataFrame(pred_y, columns = ['Predicted'])
 y_test = y_test.reset_index (drop = True)
@@ -412,10 +470,16 @@ residual_df["Residual"] = residual_df["Target"] - residual_df["Predicted"]
 residual_df["Residual%"] = abs((residual_df["Target"] - residual_df["Predicted"])/residual_df["Target"]*100)
 residual_df.describe()
  ```
-=> In worste case, max residual percentage is 7%. It means expecting standard deviation to be 9% different from actual values
+
+<img src="images/residual.png" width="400"/>
+
+ 
+**=> In worste case, max residual percentage is 7%. It means expecting standard deviation to be 9% different from actual values**
 
 
-## Check feature weight: which features drive target variable the most ?
+## Check feature weight
+
+Last but not least, let's see which features affect our work life
 
 ```python
 reg_summary = pd.DataFrame(x.columns.values, columns = ["Features"])
@@ -427,8 +491,10 @@ sns.barplot(x="Weights", y="Features", data=reg_summary.sort_values("Weights", a
             label="Weights")
 ax.set_title("Feature Weights in Linear Regression",fontsize=20)      
  ```
+ 
+<img src="images/feature weight.png" width="700"/>
 
-
+According to the graph, we can see that achievement was the most important factor in work-life balance.
 
 
 
