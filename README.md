@@ -69,7 +69,7 @@ pd.crosstab(df.GENDER,df.AGE, normalize=True).plot(kind="bar")
 => According to the bar graph, It shows that most people were from 21 to 50 anticipating in the survey. There are more females than males
 
 
-
+#### Healthy body, reflecting your fitness and healthy habits
 ```python
 # BMI and gender
 pd.crosstab(df.GENDER,df.BMI_RANGE, normalize=True).plot(kind="bar")
@@ -82,7 +82,103 @@ pd.crosstab(df.GENDER,df.BMI_RANGE, normalize=True).plot(kind="bar")
  
  However, it's hard to make a consumption.
 
+
+```python
+df2 = df.pivot_table(values='BMI_RANGE', index=['AGE'], columns=['GENDER'], )
+df2.head()
+
+# Physical health
+f,ax = plt.subplots(2,2,figsize=(16,10))
+ax[0,0].set_title('BMI_RANGE BETWEEN AGE')
+ax[0,1].set_title('DAILY STEP VS BMI_RANGE')
+ax[1,0].set_title('EATING HABIT VS BMI_RANGE')
+
+# ax[0,0].set_ylim([3.5, 4.5])
+df2.plot(kind='bar', ax = ax[0,0])
+ax[0,0].tick_params(axis='x', rotation=0)
+
+sns.pointplot(x = 'DAILY_STEPS',  y = 'BMI_RANGE',  data=df, ax = ax[0,1])
+sns.pointplot(x = 'FRUITS_VEGGIES',  y = 'BMI_RANGE',  data=df, ax = ax[1,0])
+
+f.suptitle('PHYSICAL HEALTH\nWHAT AFFECTS OUR BODY MASS INDEX?', fontsize=20)
+plt.show()
+ ```
+ <img src="images/physical health.png" width="600"/>
+
  
+
+#### Healthy mind, indicating how well you embrace positive emotions
+
+'Flow' is defined as the mental state, in which you are fully immersed in performing an activity.
+
+ You then experience a feeling of energized focus, full involvement, and enjoyment in the process of this activity.
+ 
+```python
+df3 = df.pivot_table(values='DAILY_STRESS', index=['AGE'], columns=['GENDER'], )
+df3.head()
+
+# Daily stress
+f,ax = plt.subplots(2,2,figsize=(12,10))
+ax[0,0].set_title('DAILY STRESS BETWEEN AGES')
+ax[0,1].set_title('DAILY STRESS VS MEDITATION')
+ax[1,0].set_title('DAILY STRESS VS FLOW')
+ax[1,1].set_title('DAILY STRESS VS LOST VACATION')
+
+
+df3.plot(kind='bar', ax = ax[0,0])
+ax[0,0].tick_params(axis='x', rotation=0)
+
+sns.pointplot(x = 'WEEKLY_MEDITATION',  y = 'DAILY_STRESS',  data=df, ax = ax[0,1])
+sns.pointplot(x = 'FLOW',  y = 'DAILY_STRESS',  data=df, ax = ax[1,0])
+sns.pointplot(x = 'LOST_VACATION',  y = 'DAILY_STRESS',  data=df, ax = ax[1,1])
+
+
+f.suptitle('HEALTHY MIND\nWHAT DRIVE US TO ACHIEVE A HEALTHY MIND?', fontsize=20)
+plt.show()
+ ```
+ 
+<img src="" width="500"/>
+
+
+
+
+
+#### Expertise, measuring the ability to grow your expertise and achieve something unique
+
+ 
+```python
+df4 = df.pivot_table(values='ACHIEVEMENT', index=['AGE'], columns=['GENDER'])
+df4.head()
+
+# EXPERTISE
+f,ax = plt.subplots(2,2,figsize=(14,10))
+ax[0,0].set_title('AVERAGE ACHIEVEMENTS BY AGE')
+ax[0,1].set_title('ACHIEVEMENTS vs TODO_COMPLETED')
+ax[1,0].set_title('ACHIEVEMENTS & DAILY HOURS OF FLOW')
+ax[1,1].set_title('ACHIEVEMENTS & HOURS OF SLEEP')
+
+
+df4.plot(kind='bar', ax = ax[0,0])
+ax[0,0].tick_params(axis='x', rotation=0)
+
+sns.pointplot(x = 'TODO_COMPLETED',  y = 'ACHIEVEMENT',  data=df, ax = ax[0,1])
+sns.pointplot(x = 'FLOW',  y = 'ACHIEVEMENT',  data=df, ax = ax[1,0])
+sns.pointplot(x = 'SLEEP_HOURS', y = 'ACHIEVEMENT',  data=df, ax = ax[1,1])
+
+f.suptitle('PERSONAL ACHIEVEMENTS\nWHAT DRIVE US TO ACHIEVE REMARKABLE THINGS?', fontsize=20)
+plt.show()
+ ```
+ <img src="" width="600"/>
+
+
+#### Connection, assessing the strength of your social network and your inclination to discover the world
+
+ 
+```python
+
+ ```
+ <img src="images/personal achievement.png" width="600"/>
+
 
 ```python
 # Sufficient and gender
