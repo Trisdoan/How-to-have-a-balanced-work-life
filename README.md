@@ -4,8 +4,13 @@ I want to know which factors affecting our life, whether or not based on some fa
 
 Link dataset: https://www.kaggle.com/datasets/ydalat/lifestyle-and-wellbeing-data/code
 
-I refered to this github: https://github.com/taufiqbashori/wellbeing-regression/blob/main/Work_Life_Balance_MultiRegression%20(1).ipynb
+Reference: 
 
+https://towardsdatascience.com/analyze-the-data-through-data-visualization-using-seaborn-255e1cd3948e
+
+https://github.com/taufiqbashori/wellbeing-regression/blob/main/Work_Life_Balance_MultiRegression%20(1).ipynb
+
+https://www.kaggle.com/code/ydalat/work-life-balance-survey-eda#1.-Data-Import-and-Preparation
 
 # INSIGHTS 
 
@@ -174,9 +179,28 @@ plt.show()
 
  
 ```python
+df5 = df.pivot_table(values='CORE_CIRCLE', index=['AGE'], columns=['GENDER'])
 
+# Connection
+f,ax = plt.subplots(2,2,figsize=(16,10))
+ax[0,0].set_title('CORE CIRCLE BETWEEN AGE')
+ax[0,1].set_title('CORE CIRCLE VS ACHIEVEMENT')
+ax[1,0].set_title('CORE CIRCLE VS PLACE VISITED')
+ax[1,1].set_title('CORE CIRCLE VS SOCIAL_NETWORK')
+
+
+df5.plot(kind='bar', ax = ax[0,0])
+ax[0,0].tick_params(axis='x', rotation=0)
+
+sns.pointplot(x = 'ACHIEVEMENT', y = 'CORE_CIRCLE',  data=df, ax = ax[0,1])
+sns.pointplot(x = 'PLACES_VISITED', y = 'CORE_CIRCLE',  data=df, ax = ax[1,0])
+sns.pointplot(x = 'SOCIAL_NETWORK', y = 'CORE_CIRCLE',  data=df, ax = ax[1,1])
+
+
+f.suptitle('ASSESSING SOCIAL CONNECTION', fontsize=20)
+plt.show()
  ```
- <img src="images/personal achievement.png" width="600"/>
+ <img src="images/connection.png" width="600"/>
 
 
 ```python
@@ -217,7 +241,7 @@ df.SUFFICIENT_INCOME.replace({1: "Not or hardly sufficient", 2: "Sufficient"}, i
 
 In this step, I used **get_dummies** to transform the categorical features for machine learning.
 
-I dropoed the first column to avoid redundancy.
+I dropped the first column to avoid redundancy.
 
 ```python
 BMI = pd.get_dummies(df.BMI_RANGE,drop_first=True)
