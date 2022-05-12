@@ -137,8 +137,7 @@ f.suptitle('HEALTHY MIND\nWHAT DRIVE US TO ACHIEVE A HEALTHY MIND?', fontsize=20
 plt.show()
  ```
  
-<img src="" width="500"/>
-
+<img src="images/healthy mind.png" width="500"/>
 
 
 
@@ -168,7 +167,7 @@ sns.pointplot(x = 'SLEEP_HOURS', y = 'ACHIEVEMENT',  data=df, ax = ax[1,1])
 f.suptitle('PERSONAL ACHIEVEMENTS\nWHAT DRIVE US TO ACHIEVE REMARKABLE THINGS?', fontsize=20)
 plt.show()
  ```
- <img src="" width="600"/>
+ <img src="images/personal achievement.png" width="600"/>
 
 
 #### Connection, assessing the strength of your social network and your inclination to discover the world
