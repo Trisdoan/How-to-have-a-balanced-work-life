@@ -201,6 +201,37 @@ f.suptitle('ASSESSING SOCIAL CONNECTION', fontsize=20)
 plt.show()
  ```
  <img src="images/connection.png" width="600"/>
+ 
+ 
+ 
+ 
+ #### Meaning, evaluating your compassion, generosity and how much 'you are living the life of your dream'.
+
+ 
+```python
+df6 = df.pivot_table(values='TIME_FOR_PASSION', index=['AGE'], columns=['GENDER'], )
+df6.head()
+
+# EXPERTISE
+f,ax = plt.subplots(2,2,figsize=(12,10))
+ax[0,0].set_title('TIME FOR PASSION AMONG AGE')
+ax[0,1].set_title('TODO_COMPLETED VS TIME FOR PASSION')
+ax[1,0].set_title('FLOW & TIME FOR PASSION')
+ax[1,1].set_title('PERSONAL_AWARDS &TIME FOR PASSION')
+
+
+
+df6.plot(kind='bar', ax = ax[0,0])
+ax[0,0].tick_params(axis='x', rotation=0)
+
+sns.pointplot(x = 'TODO_COMPLETED',  y = 'TIME_FOR_PASSION',  data=df,  ax = ax[0,1])
+sns.pointplot(x = 'FLOW',  y = 'TIME_FOR_PASSION',  data=df, ax = ax[1,0])
+sns.pointplot(x = 'PERSONAL_AWARDS', y = 'TIME_FOR_PASSION',  data=df, ax = ax[1,1])
+
+f.suptitle('TIME FOR PASSION\nWHAT AFFECT YOUR TIME FOR PASSION?', fontsize=20)
+plt.show()
+ ```
+ <img src="images/TIME FOR PASSION.png" width="600"/>
 
 
 ```python
