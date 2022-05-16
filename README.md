@@ -73,8 +73,6 @@ pd.crosstab(df.GENDER,df.AGE, normalize=True).plot(kind="bar")
  
 => According to the bar graph, It shows that most people were from 21 to 50 anticipating in the survey. There are more females than males
 
-
-#### Healthy body, reflecting your fitness and healthy habits
 ```python
 # BMI and gender
 pd.crosstab(df.GENDER,df.BMI_RANGE, normalize=True).plot(kind="bar")
@@ -86,7 +84,9 @@ pd.crosstab(df.GENDER,df.BMI_RANGE, normalize=True).plot(kind="bar")
  => It shows that both male and female anticipants have Body Mass Index(BMI) below 21, but not equal. Female rates are higher than those of male.
  
  However, it's hard to make a consumption.
-
+ 
+#### Healthy body, reflecting your fitness and healthy habits
+In the survey, BMI index was calculated in this way: your body mass in kg divided by the square of your height in meters 
 
 ```python
 df2 = df.pivot_table(values='BMI_RANGE', index=['AGE'], columns=['GENDER'], )
@@ -110,13 +110,14 @@ plt.show()
  ```
  <img src="images/physical health.png" width="600"/>
 
+1. Start from the left high corner, the graph shows that people, who are from 21 to 51 and more, share approximately same figure among male and female.
+2. Looke at the right high graph, it shows the relationship between daily steps and BMI index. It's obvious that the more you walk, more weight you lose.
+3. How about eating habit ? the last graph shows that consuming fruit and veggies also helps to lose weights.
  
 
 #### Healthy mind, indicating how well you embrace positive emotions
 
-'Flow' is defined as the mental state, in which you are fully immersed in performing an activity.
-
- You then experience a feeling of energized focus, full involvement, and enjoyment in the process of this activity.
+In the survey, 'Flow' is defined as the mental state, in which you are fully immersed in performing an activity. You then experience a feeling of energized focus, full involvement, and enjoyment in the process of this activity. __It was measure by how many hours you experience "flow"__
  
 ```python
 df3 = df.pivot_table(values='DAILY_STRESS', index=['AGE'], columns=['GENDER'], )
@@ -144,6 +145,12 @@ plt.show()
  
 <img src="images/healthy mind.png" width="500"/>
 
+1. Firstly, let's look at stress the participants experience daily. It's easy to see that in most ages, females are more stressful than males, especially under 35. 
+   * It may happen because when young women feel more insecure about the appearence
+   * Or when they have lots of things to take care of like children, particularly when they are pregnant.
+2. Does mediation help to ease stress? It seems like it can. At right hight corner, the graph shows that the more participants meditated, less stress they experienced.
+3. At the left bottom corner, the graph also shows that when they experienced more flow at work, that feeling helped them to reduce stress. 
+4. It's intersting that when they lost vacations, especially above 6 vacations, they felt more stressfull. However, whey they lost so many vaction, from 7 vacations, it did not differ much from losing 6 vacations.
 
 
 
@@ -174,9 +181,12 @@ plt.show()
  ```
  <img src="images/personal achievement.png" width="600"/>
 
+1. First, look at personal achievements and ages. It shows that under 35, females were more proud of themselves than males were. However, above 36, males felt more proud of themselves. 
+2. The other 3 graphs show that **"flow" hours**, **tasks completed** and **sleep hours** all contributed to the amount personal achievements they got.    
 
 #### Connection, assessing the strength of your social network and your inclination to discover the world
 
+In the survey, core_circle was measured by "how many people are very close to you".
  
 ```python
 df5 = df.pivot_table(values='CORE_CIRCLE', index=['AGE'], columns=['GENDER'])
@@ -202,7 +212,9 @@ plt.show()
  ```
  <img src="images/connection.png" width="600"/>
  
- 
+ 1. The graph from the left high corner shows that mostly females had more close supports than males. It could be the reason why men feel more lonely :)
+ 2. The graphs of core_circle with social network and core_cirle with place_visited shows that places they visited, amount of people they interact everyday all contributed to amount of close friends you have.
+ 3. It's interesting that when they had more achievements, 
  
  
  #### Meaning, evaluating your compassion, generosity and how much 'you are living the life of your dream'.
