@@ -23,7 +23,7 @@ https://www.kaggle.com/code/ydalat/work-life-balance-survey-eda#1.-Data-Import-a
 * When we finish work, do not forget to **spend time for relaxing**. Vacation is important, don't lose any change to enjoy life.
 4. **How to grow expertise and achieve what I dream of ?**
 * **Focusing** help to grow our expertise and achieve things we want. Focusing leads to finishing required tasks.
-* Quality of sleeps plays an important role in how we work. Because It determines how we focus on what we are doing.
+* **Quality of sleeps** plays an important role in how we work. Because It determines how we focus on what we are doing.
 6. **Is connection important? How to make more friends ?**
 * Connections is of paramount importance. There is a proverb saying that "If you want to go far, go together". More friends we have, more supports we get.
 *  **Traveling** and **interacting with people daily** can make our friend circle expand.
