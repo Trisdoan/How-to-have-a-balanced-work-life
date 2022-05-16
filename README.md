@@ -14,7 +14,15 @@ https://www.kaggle.com/code/ydalat/work-life-balance-survey-eda#1.-Data-Import-a
 
 # INSIGHTS 
 
-Let
+1. **How to have a healthy body ?**
+* Activities we participate daily play a role in physical health
+* It's recommended to mind what we consume: diets which include more fruits and veggies are suggested
+2. **How to have a healthy mind ?**
+3. **How to grow expertise and achieve what I dream of ?**
+4. **Is connection important? How to make more friends ?**
+5. **What can we do to spend more time for what we are passionate about ?**
+
+
 
 # ANALYTICS PROCESS
 
@@ -214,11 +222,12 @@ plt.show()
  
  1. The graph from the left high corner shows that mostly females had more close supports than males. It could be the reason why men feel more lonely :)
  2. The graphs of core_circle with social network and core_cirle with place_visited shows that places they visited, amount of people they interact everyday all contributed to amount of close friends you have.
- 3. It's interesting that when they had more achievements, 
+ 3. It's interesting that when they had more achievements, their circle expanded.
  
  
  #### Meaning, evaluating your compassion, generosity and how much 'you are living the life of your dream'.
 
+In the survey, time for passion was measure by : Daily hours spent doing what you are passionate and dreaming about, and/or contributing to a greater cause: health, education, peace, society development, ...
  
 ```python
 df6 = df.pivot_table(values='TIME_FOR_PASSION', index=['AGE'], columns=['GENDER'], )
@@ -245,6 +254,9 @@ plt.show()
  ```
  <img src="images/TIME FOR PASSION.png" width="600"/>
 
+1. Firstly, time for passion among ages show not much difference. However, male in early ages, under 20, they spent more time for passion than femaled did.
+2. It's obvious that when they finished work or experienced flow in work, they had more time to spend for their passion.
+3. Moreover, when they spent time for passion, the more personal awards they had.
 
 ```python
 # Sufficient and gender
