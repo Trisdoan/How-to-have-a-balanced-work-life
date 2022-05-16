@@ -12,16 +12,21 @@ https://github.com/taufiqbashori/wellbeing-regression/blob/main/Work_Life_Balanc
 
 https://www.kaggle.com/code/ydalat/work-life-balance-survey-eda#1.-Data-Import-and-Preparation
 
-# INSIGHTS 
+# SUMMARIZED INSIGHTS 
 
 1. **How to have a healthy body ?**
-* Activities we participate daily play a role in physical health
-* It's recommended to mind what we consume: diets which include more fruits and veggies are suggested
+* **Activities we participate daily** play a role in physical health.
+* It's recommended to mind what we consume: **diets which include more fruits and veggies** are suggested.
 2. **How to have a healthy mind ?**
-3. **How to grow expertise and achieve what I dream of ?**
-4. **Is connection important? How to make more friends ?**
-5. **What can we do to spend more time for what we are passionate about ?**
-
+* **Meditation** can help us to ease stress. From my own experience, It does not require meditating for long time. It can take under many forms: 5 minutes sit down and breath is great as well to calm down and reduce stress.
+* **Engaging in what we are doing** also reduces stress. The feeling after engaging and finishing something makes us feel proud and save time to do other things we love. In order to do that, we have to find what we are passionate about to do.
+* When we finish work, do not forget to **spend time for relaxing**. Vacation is important, don't lose any change to enjoy life.
+4. **How to grow expertise and achieve what I dream of ?**
+* **Focusing** help to grow our expertise and achieve things we want. Focusing leads to finishing required tasks.
+* Quality of sleeps plays an important role in how we work. Because It determines how we focus on what we are doing.
+6. **Is connection important? How to make more friends ?**
+* Connections is of paramount importance. There is a proverb saying that "If you want to go far, go together". More friends we have, more supports we get.
+*  **Traveling** and **interacting with people daily** can make our friend circle expand.
 
 
 # ANALYTICS PROCESS
@@ -233,14 +238,11 @@ In the survey, time for passion was measure by : Daily hours spent doing what yo
 df6 = df.pivot_table(values='TIME_FOR_PASSION', index=['AGE'], columns=['GENDER'], )
 df6.head()
 
-# EXPERTISE
 f,ax = plt.subplots(2,2,figsize=(12,10))
 ax[0,0].set_title('TIME FOR PASSION AMONG AGE')
 ax[0,1].set_title('TODO_COMPLETED VS TIME FOR PASSION')
 ax[1,0].set_title('FLOW & TIME FOR PASSION')
 ax[1,1].set_title('PERSONAL_AWARDS &TIME FOR PASSION')
-
-
 
 df6.plot(kind='bar', ax = ax[0,0])
 ax[0,0].tick_params(axis='x', rotation=0)
