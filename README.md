@@ -91,7 +91,7 @@ df.DAILY_STRESS = pd.to_numeric(df.DAILY_STRESS,errors="coerce")
  
 ### Fill daily_stress with median
 
-There are not too much nills in this column(below 10%). I used common approach **"median"** to replace those nulls
+There are not too much nulls in this column(below 10%). I used common approach **"median"** to replace those nulls
 
 ```python
 #Check null or not
