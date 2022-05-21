@@ -1,13 +1,22 @@
-# Overview of project
+# :key: To Achieve Work-life Balance
 
-## Targets:
-* In order to reinvent our lifestyles and optimize our individual wellbeing, I extracted valuable insights from this dataset.
-* Afterall, I created a **Multiple Linear Regression** to see what predictors of a balanced life are
-
-## Context:
+## :memo:Overview:
 Link dataset: https://www.kaggle.com/datasets/ydalat/lifestyle-and-wellbeing-data/code
 
+Reference: 
+
+https://towardsdatascience.com/analyze-the-data-through-data-visualization-using-seaborn-255e1cd3948e
+
+https://github.com/taufiqbashori/wellbeing-regression/blob/main/Work_Life_Balance_MultiRegression%20(1).ipynb
+
+https://www.kaggle.com/code/ydalat/work-life-balance-survey-eda#1.-Data-Import-and-Preparation
+
 This dataset contains 15,977 survey responses with 24 attributes describing how we live our lives.
+<details>
+<summary>
+Click here to expand attributes!
+</summary>
+ 
 1. FRUITS_VEGGIES: HOW MANY FRUITS OR VEGETABLES DO YOU EAT EVERYDAY?
 2. DAILY_STRESS: HOW MUCH STRESS DO YOU TYPICALLY EXPERIENCE EVERYDAY?
 3. PLACES_VISITED: HOW MANY NEW PLACES DO YOU VISIT?
@@ -32,16 +41,15 @@ This dataset contains 15,977 survey responses with 24 attributes describing how 
 22. AGE: 21 to 35, 36 to 50, 51 and more, less than 20
 23. WORK_LIFE_BALANCE_SCORE: SCORE CALCULATED BY AH.COM ALGORITHM AND REPORTED TO USER IN THE FIRST REPORT
 
+</details>
 
-Reference: 
 
-https://towardsdatascience.com/analyze-the-data-through-data-visualization-using-seaborn-255e1cd3948e
+## :open_file_folder:Objectives:
+* In order to reinvent our lifestyles and optimize our individual wellbeing, I extracted valuable insights from this dataset.
+* Afterall, I created a **Multiple Linear Regression** to see what predictors of a balanced life are
 
-https://github.com/taufiqbashori/wellbeing-regression/blob/main/Work_Life_Balance_MultiRegression%20(1).ipynb
 
-https://www.kaggle.com/code/ydalat/work-life-balance-survey-eda#1.-Data-Import-and-Preparation
-
-# SUMMARIZED INSIGHTS 
+## :pill:Summarized Insights 
 
 1. **How to have a healthy body ?**
 * **Activities we participate daily** play a role in physical health.
