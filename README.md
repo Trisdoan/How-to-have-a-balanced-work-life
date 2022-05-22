@@ -456,7 +456,10 @@ plot.set_ylabel("Skewness", fontsize = 12)
 
 => It worked quite well. It reduced the skewness of those featured below 0.25
 
-### Created 2 datasets for orginal df and transformed_df
+ 
+## Machine Learning - Multilple LinearRegression
+
+## Created 2 datasets for orginal df and transformed_df
 
 ```python
 # skewed_df
@@ -466,8 +469,33 @@ skewed_df
 #non_skew_df
 df
  ```
+
+### Check correlation between predictors and target feature
+
+Firstly, I checked original dataset
+```python
+corr_df = pd.DataFrame(df.corr())
+corr_df["WORK_LIFE_BALANCE_SCORE"].sort_values()
+ ```
+ <img src="images/corr_original.png" width="500"/>
+
+I would remove features which were nearly 0. Those are features relating to Gender and Age.
+```python
+df.drop(['Male', 'Less than 20', '36 to 50','51 or more'], axis=1, inplace=True)
+ ```
  
-## Train model
+ 
+Finally, I repeated with the skewed dataset
+```python
+corr_skew_df = pd.DataFrame(skewed_df.corr())
+corr_skew_df["WORK_LIFE_BALANCE_SCORE"].sort_values()
+ ```
+ <img src="images/corr_skewed.png" width="500"/>
+
+I would also remove Gender and Age features which were nearly 0.
+```python
+skewed_df.drop(['Male', 'Less than 20', '36 to 50','51 or more'], axis=1, inplace=True)
+ ```
 
 ### Create X and Y for 2 datasets
 
@@ -580,7 +608,7 @@ vif_data["VIF"] = [variance_inflation_factor(X.values, i)
   
 vif_data.sort_values(by='VIF', ascending = False)
  ```
-<img src="images/non_skew.png" width="400"/>
+<img src="images/vif_original dataset.png" width="400"/>
 
 There are some features that are highly correlated between them(above 5)
 
@@ -599,7 +627,7 @@ vif_data["VIF"] = [variance_inflation_factor(X.values, i)
   
 vif_data.sort_values(by='VIF', ascending = False)
  ```
-<img src="images/skew df.png" width="400"/>
+<img src="images/vif_skewd.png" width="400"/>
 
 Again, this skewed dataset also has some features that are highly correlated between them.
 
@@ -730,7 +758,7 @@ plt.ylabel('Predicted values', size = 16)
 plt.title('Model Trained R Squared ='+ '{number:.3f}'.format(number=R2_test), size = 20)
  ```
 
-<img src="images/model.png" width="400"/>
+<img src="images/applytest.png" width="400"/>
 
 **=> It explained 92% test dataset. Look good!!!**
 
@@ -746,7 +774,7 @@ residual_df["Residual%"] = abs((residual_df["Target"] - residual_df["Predicted"]
 residual_df.describe()
  ```
 
-<img src="images/residual.png" width="400"/>
+<img src="images/residual_W.png" width="400"/>
 
  
 **=> In worste case, max residual percentage is 8%. It means expecting standard deviation to be 9% different from actual values**
@@ -767,7 +795,7 @@ sns.barplot(x="Weights", y="Features", data=reg_summary.sort_values("Weights", a
 ax.set_title("Feature Weights in Linear Regression",fontsize=20)      
  ```
  
-<img src="images/feature weight.png" width="700"/>
+<img src="images/feature weight_1.png" width="700"/>
 
 According to the graph, I could suggest some following insights:
 
