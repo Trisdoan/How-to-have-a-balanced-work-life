@@ -467,66 +467,6 @@ skewed_df
 df
  ```
  
-### Check Multicollinearity by VIF
-
-In order to avoid multicollinearity(possibility of independent variables correlating to each others) when doing multiple linear regression, I used VIF to check.
-
-```python
-import statsmodels.api as sm
-from scipy import stats
-from statsmodels.stats.outliers_influence import variance_inflation_factor
-
-# def calc VIF
-def cal_vif(X):
-    vif = pd.DataFrame()
-    vif["VIF Factor"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
-    vif["features"] = X.columns
-    return vif
-    
-# vif for non_skew df
-vif_df = cal_vif(df.drop(columns = "WORK_LIFE_BALANCE_SCORE"))
-vif_df.sort_values(by="VIF Factor", ascending=False)
- ```
-<img src="images/non_skew.png" width="400"/>
-
-There are some features that are highly correlated between them(above 5)
-
-```python
-# vif for skew df
-vif_skewed_df = cal_vif(skewed_df.drop(columns = "WORK_LIFE_BALANCE_SCORE"))
-vif_skewed_df.sort_values(by="VIF Factor", ascending=False)
- ```
-<img src="images/skew df.png" width="400"/>
-
-Again, this skewed dataset also has some features that are highly correlated between them.
-
-
-#### Re-calc VIF
-
-With those correlated features, I removed them.
-
-```python
-# vif for non_skew df which removed columns having VIF above 5.5
-vif_df_2 = cal_vif(df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS", "TODO_COMPLETED", 
-                                    "SOCIAL_NETWORK", "FRUITS_VEGGIES","WEEKLY_MEDITATION",
-                                    "SUPPORTING_OTHERS", "PERSONAL_AWARDS"], axis=1))
-vif_df_2.sort_values(by="VIF Factor", ascending=False)
- ```
- <img src="images/recal_vif_non_skew.png" width="400"/>
-
-I did the same for skewed dataset.
-
-```python
-# vif for skewed df which removed columns having VIF above 5.5
-vif_skewed_df_2 = cal_vif(skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS_transformed", "ACHIEVEMENT_transformed", 
-                                    "SOCIAL_NETWORK", "FLOW_transformed","TODO_COMPLETED_transformed",
-                                    "FRUITS_VEGGIES", "TIME_FOR_PASSION_transformed", "WEEKLY_MEDITATION",
-                                    "SUPPORTING_OTHERS"], axis=1))
-vif_skewed_df_2.sort_values(by="VIF Factor", ascending=False)
- ```
-<img src="images/recal_vif_skew.png" width="400"/>
-
-
 ## Train model
 
 ### Create X and Y for 2 datasets
@@ -535,21 +475,14 @@ I created predictor features and target feature for orginal dataset(x_1, y_1) an
 
 ```python
 # preprocessing
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 
-x_1 = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS", "TODO_COMPLETED", 
-                                    "SOCIAL_NETWORK", "FRUITS_VEGGIES","WEEKLY_MEDITATION",
-                                    "SUPPORTING_OTHERS", "PERSONAL_AWARDS"], axis=1)
+x_1 = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE"], axis=1)
 y_1 = df.WORK_LIFE_BALANCE_SCORE
 
 ## skewed dataset
-x_2 = skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS_transformed", "ACHIEVEMENT_transformed", 
-                                    "SOCIAL_NETWORK", "FLOW_transformed","TODO_COMPLETED_transformed",
-                                    "FRUITS_VEGGIES", "TIME_FOR_PASSION_transformed", "WEEKLY_MEDITATION",
-                                    "SUPPORTING_OTHERS"], axis=1)
+x_2 = skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE"], axis=1)
 y_2 = skewed_df.WORK_LIFE_BALANCE_SCORE
-
  ```
  
 
@@ -557,32 +490,31 @@ y_2 = skewed_df.WORK_LIFE_BALANCE_SCORE
 
 To scale all features into same unit, I used **MinMaxScaler** to transform them.
 
+Firstly, I scaled the original dataset(without skewing).
 ```python
 # our scaler
 scaler = MinMaxScaler()
 
-
 # fit the scaler to our data
-numeric_x_1 = x_1.drop(columns = ['BMI > 25', 'Sufficient',
-       '36 to 50', '51 or more', 'Less than 20', 'Male'],axis =1 )
+numeric_x_1 = x_1.drop(columns = ['BMI > 25', 'Sufficient'],axis =1 )
 
 scaled_numeric_x_1 = pd.DataFrame(scaler.fit_transform(numeric_x_1), columns = numeric_x_1.columns)
 
-x_1 = pd.concat((scaled_numeric_x_1,x_1[['BMI > 25', 'Sufficient',
-       '36 to 50', '51 or more', 'Less than 20', 'Male']]),axis=1)
+x_1 = pd.concat((scaled_numeric_x_1,x_1[['BMI > 25', 'Sufficient']]),axis=1)
+```
 
-
- # our scaler
+Then, I scaled the skewed dataset.
+```python
+# our scaler
 scaler = MinMaxScaler()
+#scaler = StandardScaler()
 
 # fit the scaler to our data
-numeric_x_2 = x_2.drop(columns = ['BMI > 25', 'Sufficient',
-       '36 to 50', '51 or more', 'Less than 20', 'Male'],axis =1 )
+numeric_x_2 = x_2.drop(columns = ['BMI > 25', 'Sufficient'],axis =1 )
 
 scaled_numeric_x_2 = pd.DataFrame(scaler.fit_transform(numeric_x_2), columns = numeric_x_2.columns)
 
-x_2 = pd.concat((scaled_numeric_x_2,x_2[['BMI > 25', 'Sufficient',
-       '36 to 50', '51 or more', 'Less than 20', 'Male']]),axis=1)
+x_2 = pd.concat((scaled_numeric_x_2,x_2[['BMI > 25', 'Sufficient']]),axis=1)
  ```
  
  
@@ -590,7 +522,7 @@ x_2 = pd.concat((scaled_numeric_x_2,x_2[['BMI > 25', 'Sufficient',
 
 ```python
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(x_1, y_1,random_state = 0,test_size=0.25)
+X_train, X_test, y_train, y_test = train_test_split(x_1, y_1,test_size=0.3)
 
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
@@ -601,23 +533,153 @@ regr = linear_model.LinearRegression()
 regr.fit(X_train,y_train)
 y_pred = regr.predict(X_train)
 
-print("R squared for orginal dataset: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
+print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
  ```
- => R squared for orginal dataset: 0.9218224459993715
+ => R squared: 0.999997940145977
+ 
+ Woww!! extremely high.
  
  
 ```python
-X_train, X_test, y_train, y_test = train_test_split(x_2, y_2,random_state = 0,test_size=0.25)
+X_train, X_test, y_train, y_test = train_test_split(x_2, y_2,test_size=0.25)
+
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
+from sklearn import linear_model
 
 regr = linear_model.LinearRegression()
 regr.fit(X_train,y_train)
 y_pred = regr.predict(X_train)
 
-print("R squared for skewed dataset: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
+print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
  ```
- => R squared for skewed dataset: 0.8648375006226039
+ => R squared for skewed dataset:0.993279951600148
+ 
+ This is also unuasually high. There must be something wrong. I need to check both dataset.
+ 
+ 
+### Check Multicollinearity by VIF
+
+In order to avoid multicollinearity(possibility of independent variables correlating to each others) when doing multiple linear regression, I used VIF to check.
+
+Firstly, I checked multicollinearity of the original dataset
+```python
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+# the independent variables set
+X = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE"], axis=1)
+  
+# VIF dataframe
+vif_data = pd.DataFrame()
+vif_data["feature"] = X.columns
+  
+# calculating VIF for each feature
+vif_data["VIF"] = [variance_inflation_factor(X.values, i)
+                          for i in range(len(X.columns))]
+  
+vif_data.sort_values(by='VIF', ascending = False)
+ ```
+<img src="images/non_skew.png" width="400"/>
+
+There are some features that are highly correlated between them(above 5)
+
+```python
+# vif for skew df
+# the independent variables set
+X = skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE"], axis=1)
+  
+# VIF dataframe
+vif_data = pd.DataFrame()
+vif_data["feature"] = X.columns
+  
+# calculating VIF for each feature
+vif_data["VIF"] = [variance_inflation_factor(X.values, i)
+                          for i in range(len(X.columns))]
+  
+vif_data.sort_values(by='VIF', ascending = False)
+ ```
+<img src="images/skew df.png" width="400"/>
+
+Again, this skewed dataset also has some features that are highly correlated between them.
+
+**So the problem may be here. I decided to remove those high multicolinear features**
+
+
+### Re-compare R2 after removing hight multicolinear
+
+Firstly, I did the scaling section again for both datasets again.
+```python
+# Split datasets
+x_1 = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS", "TODO_COMPLETED", 
+                                    "SOCIAL_NETWORK", "FRUITS_VEGGIES","WEEKLY_MEDITATION",
+                                    "SUPPORTING_OTHERS", "PERSONAL_AWARDS"], axis=1)
+y_1 = df.WORK_LIFE_BALANCE_SCORE
+
+x_2 = skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS_transformed", "ACHIEVEMENT_transformed", 
+                                    "SOCIAL_NETWORK", "FLOW_transformed","TODO_COMPLETED_transformed",
+                                    "FRUITS_VEGGIES", "TIME_FOR_PASSION_transformed", "WEEKLY_MEDITATION",
+                                    "SUPPORTING_OTHERS"], axis=1)
+y_2 = skewed_df.WORK_LIFE_BALANCE_SCORE
+
+
+# Scaling original dateset
+scaler = MinMaxScaler()
+# fit the scaler to our data
+numeric_x_1 = x_1.drop(columns = ['BMI > 25', 'Sufficient'],axis =1 )
+scaled_numeric_x_1 = pd.DataFrame(scaler.fit_transform(numeric_x_1), columns = numeric_x_1.columns)
+x_1 = pd.concat((scaled_numeric_x_1,x_1[['BMI > 25', 'Sufficient']]),axis=1)
+
+# Scaling skewed dateset
+scaler = MinMaxScaler()
+# fit the scaler to our data
+numeric_x_2 = x_2.drop(columns = ['BMI > 25', 'Sufficient'],axis =1 )
+scaled_numeric_x_2 = pd.DataFrame(scaler.fit_transform(numeric_x_2), columns = numeric_x_2.columns)
+x_2 = pd.concat((scaled_numeric_x_2,x_2[['BMI > 25', 'Sufficient']]),axis=1)
+ ```
+ 
+ Then I compared their R2 Score
+ 
+ Firstly, started with the original dataset.
+ ```python
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(x_1, y_1,test_size=0.3)
+
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
+from sklearn import linear_model
+
+regr = linear_model.LinearRegression()
+regr.fit(X_train,y_train)
+y_pred = regr.predict(X_train)
+
+print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
+ ```
+R squared of original dataset: 0.9189886365802997
+
+It's not bad.
+
+Then finished with skewed dataset
+ ```python
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(x_2, y_2,test_size=0.25)
+
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
+from sklearn import linear_model
+
+regr = linear_model.LinearRegression()
+regr.fit(X_train,y_train)
+y_pred = regr.predict(X_train)
+
+print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
+ ```
+ R squared of skewed dataset: 0.8617247893396979
  
 **=> I decided to used original dataset when it explained 92% of variation around its mean better than skewed dataset**.
+
 
 ### Chech Multivariate Normality
 
@@ -670,7 +732,7 @@ plt.title('Model Trained R Squared ='+ '{number:.3f}'.format(number=R2_test), si
 
 <img src="images/model.png" width="400"/>
 
-**=> It explained 91% test dataset. Look good!!!**
+**=> It explained 92% test dataset. Look good!!!**
 
 
 ### Check residuals
@@ -687,7 +749,7 @@ residual_df.describe()
 <img src="images/residual.png" width="400"/>
 
  
-**=> In worste case, max residual percentage is 7%. It means expecting standard deviation to be 9% different from actual values**
+**=> In worste case, max residual percentage is 8%. It means expecting standard deviation to be 9% different from actual values**
 
 
 ## Check feature weight
@@ -707,7 +769,15 @@ ax.set_title("Feature Weights in Linear Regression",fontsize=20)
  
 <img src="images/feature weight.png" width="700"/>
 
-According to the graph, we can see that achievement was the most important factor in work-life balance.
+According to the graph, I could suggest some following insights:
+
+Firstly, starting with categorical features:
+1. sda
+2. asda
+
+Finally, numerical features:
+
+
 
 
 
