@@ -48,6 +48,11 @@ Click here to expand attributes!
 * In order to reinvent our lifestyles and optimize our individual wellbeing, I extracted valuable insights from this dataset.
 * Afterall, I created a **Multiple Linear Regression** to see what predictors of a balanced life are
 
+## :open_file_folder:Table of contents:
+1. [Cleaning and EDA](#cleaning-and-eda)
+2. [Building linear regression model](#multiple-linear-regression)
+3. [Checking model](#check-multicollinearity-by-vif)
+4. [Insights from model](#check-feature-weight)
 
 ## :pill:Summarized Insights 
 
@@ -84,7 +89,7 @@ data = pd.read_csv("Wellbeing_and_lifestyle_data_Kaggle.csv")
 df = data.copy()
  ```
 
-## CLEANING & EDA
+## CLEANING AND EDA
 
 ### Transfer non-numeric datatype into numeric
 
@@ -313,7 +318,7 @@ It could be because of 2 potential reasons:
 1. More females anticipating than males
 2. Females care about finance than males. Because those guys either make less money or give their partners their money :)
  
-## PREDICTION MODEL
+## Multiple Linear Regression
 
 ### Feature Transformation & Selection
 
@@ -457,7 +462,7 @@ plot.set_ylabel("Skewness", fontsize = 12)
 => It worked quite well. It reduced the skewness of those featured below 0.25
 
  
-## Machine Learning - Multilple LinearRegression
+## Train model
 
 ## Created 2 datasets for orginal df and transformed_df
 
@@ -782,7 +787,7 @@ residual_df.describe()
 
 ## Check feature weight
 
-Last but not least, let's see which features affect our work life
+Last but not least, let's see which features affect our work life. These features were ranked based on their absolute coefficient values, meaning the top feature affects our work life balance the most.
 
 ```python
 reg_summary = pd.DataFrame(x.columns.values, columns = ["Features"])
@@ -797,10 +802,12 @@ ax.set_title("Feature Weights in Linear Regression",fontsize=20)
  
 <img src="images/feature weight_1.png" width="700"/>
 
-According to the graph, I could suggest some following insights:
+According to the graph, I could suggest some following insights. However before taking a look, I need to clarify: BMI> 25 and Sufficient are categorical features(binary), which cannot be interpreted as numerical features(discrete). Because They were measured differently.
 
-Firstly, starting with categorical features:
-1. sda
+Moreover, I don't count Age and Gender features where they have no correlation with target feature.
+
+So done with clarification, let's start with categorical features:
+1. As you can see, **Sufficient feature** is ranked higher than BMI index, meaning when you think you make enough money, you find balance in life. It's obvious! But thing is you never know when you make enough money, right?. It's personal finance and psychological things, so I don't wanna dive deep into in. But I found this 5-min video, hope it's helpful: https://www.youtube.com/watch?v=T_tDthUWsVM
 2. asda
 
 Finally, numerical features:
