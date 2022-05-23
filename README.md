@@ -808,22 +808,10 @@ Moreover, I don't count Age and Gender features where they have no correlation w
 
 So done with clarification, let's start with categorical features:
 1. As you can see, **Sufficient feature** is ranked higher than BMI index, meaning when you think you make enough money, you find balance in life. It's obvious! But thing is you never know when you make enough money, right?. It's personal finance and psychological things, so I don't wanna dive deep into in. But I found this 5-min video, hope it's helpful: https://www.youtube.com/watch?v=T_tDthUWsVM
-2. asda
+2. BMI index ranked at the second place. It shows that when you have BMI index above 25(standard threshold based on expert), it negatively affects your work-life balance score, meaning your life.
 
-Finally, numerical features:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+How's about numerical features?
+1. Our main character is **Achievements**. As you can see, it ranks highest, which means every achievement you get, you add nearly 30 point to the score. It is true, at least myself. Whenever I achieved something I am passionate about, it made my day. 
+2. At the second place, **Core_cirle**, **Donation** and **Place_visited** are almost the same. While the first rank is about innerself, these features go outward, social life. We can assume that the more people we interact, happier we are. Also true with "Giver is a sharer", you give something, you also get back something you need.
 
  
