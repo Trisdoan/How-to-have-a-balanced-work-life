@@ -568,9 +568,9 @@ y_pred = regr.predict(X_train)
 
 print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
  ```
- => R squared: 0.999997940145977
+ => R squared: 0.9090063321377624
  
- Woww!! extremely high.
+It's good.
  
  
 ```python
@@ -587,10 +587,9 @@ y_pred = regr.predict(X_train)
 
 print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
  ```
- => R squared for skewed dataset:0.993279951600148
+ => R squared for skewed dataset: 0.9077558180532218
  
- This is also unuasually high. There must be something wrong. I need to check both dataset.
- 
+These results are the same. Let's check multicollinearity of both datasets to see whether there are something unsual.
  
 ### Check Multicollinearity by VIF
 
@@ -613,7 +612,7 @@ vif_data["VIF"] = [variance_inflation_factor(X.values, i)
   
 vif_data.sort_values(by='VIF', ascending = False)
  ```
-<img src="images/vif_original dataset.png" width="400"/>
+<img src="images/vif_original dataset_2.png" width="400"/>
 
 There are some features that are highly correlated between them(above 5)
 
@@ -632,7 +631,7 @@ vif_data["VIF"] = [variance_inflation_factor(X.values, i)
   
 vif_data.sort_values(by='VIF', ascending = False)
  ```
-<img src="images/vif_skewd.png" width="400"/>
+<img src="images/vif_skewed dataset_2.png" width="400"/>
 
 Again, this skewed dataset also has some features that are highly correlated between them.
 
@@ -689,7 +688,7 @@ y_pred = regr.predict(X_train)
 
 print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
  ```
-R squared of original dataset: 0.9189886365802997
+R squared of original dataset: 0.8873278439946326
 
 It's not bad.
 
@@ -709,9 +708,9 @@ y_pred = regr.predict(X_train)
 
 print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
  ```
- R squared of skewed dataset: 0.8617247893396979
+ R squared of skewed dataset: 0.8958410485958109
  
-**=> I decided to used original dataset when it explained 92% of variation around its mean better than skewed dataset**.
+**=> I decided to use skewed dataset when it explained 90% of variation around its mean better than skewed dataset**.
 
 
 ### Chech Multivariate Normality
@@ -725,7 +724,7 @@ p = sns.distplot(residuals,kde=True)
 p = plt.title('Normality of residuals')
  ```
  
- <img src="images/normality of residual.png" width="400"/>
+ <img src="images/normality_2.png" width="400"/>
 
 **=> Residual distribution is normall distributed. It's good!**
 
@@ -741,7 +740,7 @@ plt.ylabel('Residuals')
 p = sns.lineplot([y_pred.min(),y_pred.max()],[0,0],color='blue')
  ```
 
-<img src="images/homodescity.png" width="400"/>
+<img src="images/homodescity_2.png" width="400"/>
 
 **=> There is no clear pattern between residuals and predicted values. It's good**
 
@@ -763,9 +762,9 @@ plt.ylabel('Predicted values', size = 16)
 plt.title('Model Trained R Squared ='+ '{number:.3f}'.format(number=R2_test), size = 20)
  ```
 
-<img src="images/applytest.png" width="400"/>
+<img src="images/scatter_1.png" width="400"/>
 
-**=> It explained 92% test dataset. Look good!!!**
+**=> It explained nearly 90% test dataset. Look good!!!**
 
 
 ### Check residuals
@@ -779,7 +778,7 @@ residual_df["Residual%"] = abs((residual_df["Target"] - residual_df["Predicted"]
 residual_df.describe()
  ```
 
-<img src="images/residual_W.png" width="400"/>
+<img src="images/residuals_2.png" width="400"/>
 
  
 **=> In worste case, max residual percentage is 8%. It means expecting standard deviation to be 9% different from actual values**
@@ -800,7 +799,7 @@ sns.barplot(x="Weights", y="Features", data=reg_summary.sort_values("Weights", a
 ax.set_title("Feature Weights in Linear Regression",fontsize=20)      
  ```
  
-<img src="images/feature weight_1.png" width="700"/>
+<img src="images/feature weights_3.png" width="700"/>
 
 According to the graph, I could suggest some following insights. However before taking a look, I need to clarify: BMI> 25 and Sufficient are categorical features(binary), which cannot be interpreted as numerical features(discrete). Because They were measured differently.
 
