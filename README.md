@@ -800,16 +800,11 @@ ax.set_title("Feature Weights in Linear Regression",fontsize=20)
  
 <img src="images/feature weights_3.png" width="700"/>
 
-According to the graph, I could suggest some following insights. However before taking a look, I need to clarify: BMI> 25 and Sufficient are categorical features(binary), which cannot be interpreted as numerical features(discrete). Because They were measured differently.
+According to the graph, I could suggest some following insights:
 
-Moreover, I don't count Age and Gender features where they have no correlation with target feature.
+1. As you can see, **Personal Awards** ranks highest, which means every personal achievement you get, you add nearly 28 point to the score. It is true, at least myself. Whenever I achieved something I am passionate about, it made my day. 
+2. At the second place, **Weekly mediation** and **Live vision** are almost the same. It can be interpreted as when you start to focus on innerself, that is when you feel good.
 
-So done with clarification, let's start with categorical features:
-1. As you can see, **Sufficient feature** is ranked higher than BMI index, meaning when you think you make enough money, you find balance in life. It's obvious! But thing is you never know when you make enough money, right?. It's personal finance and psychological things, so I don't wanna dive deep into in. But I found this 5-min video, hope it's helpful: https://www.youtube.com/watch?v=T_tDthUWsVM
-2. BMI index ranked at the second place. It shows that when you have BMI index above 25(standard threshold based on expert), it negatively affects your work-life balance score, meaning your life.
-
-How's about numerical features?
-1. Our main character is **Achievements**. As you can see, it ranks highest, which means every achievement you get, you add nearly 30 point to the score. It is true, at least myself. Whenever I achieved something I am passionate about, it made my day. 
-2. At the second place, **Core_cirle**, **Donation** and **Place_visited** are almost the same. While the first rank is about innerself, these features go outward, social life. We can assume that the more people we interact, happier we are. Also true with "Giver is a sharer", you give something, you also get back something you need.
+=> After this analysis, I learned this: when I feel peace, happiness inside, that is the time I start 
 
  
