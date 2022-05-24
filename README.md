@@ -483,10 +483,13 @@ corr_df = pd.DataFrame(df.corr())
 corr_df["WORK_LIFE_BALANCE_SCORE"].sort_values()
  ```
  <img src="images/corr_original.png" width="500"/>
+Then I started to remove uncorrelated features manually. How ? First, I begun with the smallest absolute value of correlation above. After that, I scaled and applied to test dataset.
 
+After done some testing, I finally removed these features. Why ? Because If I continued to remove, the R2 score of the model decreased. I ended up with 90% R2 score
 I would remove features which were nearly 0. Those are features relating to Gender and Age.
 ```python
-df.drop(['Male', 'Less than 20', '36 to 50','51 or more'], axis=1, inplace=True)
+df.drop(["DAILY_SHOUTING","LOST_VACATION","BMI > 25","Male","Less than 20",
+                                  "36 to 50","51 or more","SLEEP_HOURS","DAILY_STRESS"], axis=1, inplace=True)
  ```
  
  
@@ -497,9 +500,10 @@ corr_skew_df["WORK_LIFE_BALANCE_SCORE"].sort_values()
  ```
  <img src="images/corr_skewed.png" width="500"/>
 
-I would also remove Gender and Age features which were nearly 0.
+I would also proceeded the same tasks as above.
 ```python
-skewed_df.drop(['Male', 'Less than 20', '36 to 50','51 or more'], axis=1, inplace=True)
+skewed_df.drop(["DAILY_SHOUTING_transformed","LOST_VACATION_transformed","BMI > 25","Male","Less than 20",
+                                  "36 to 50","51 or more","SLEEP_HOURS_transformed","DAILY_STRESS"], axis=1, inplace=True)
  ```
 
 ### Create X and Y for 2 datasets
@@ -529,25 +533,24 @@ Firstly, I scaled the original dataset(without skewing).
 scaler = MinMaxScaler()
 
 # fit the scaler to our data
-numeric_x_1 = x_1.drop(columns = ['BMI > 25', 'Sufficient'],axis =1 )
+numeric_x_1 = x_1.drop(columns = ["Sufficient"],axis =1 )
 
 scaled_numeric_x_1 = pd.DataFrame(scaler.fit_transform(numeric_x_1), columns = numeric_x_1.columns)
 
-x_1 = pd.concat((scaled_numeric_x_1,x_1[['BMI > 25', 'Sufficient']]),axis=1)
+x_1 = pd.concat((scaled_numeric_x_1,x_1[['Sufficient']]),axis=1)
 ```
 
 Then, I scaled the skewed dataset.
 ```python
 # our scaler
 scaler = MinMaxScaler()
-#scaler = StandardScaler()
 
 # fit the scaler to our data
-numeric_x_2 = x_2.drop(columns = ['BMI > 25', 'Sufficient'],axis =1 )
+numeric_x_2 = x_2.drop(columns = ["Sufficient"],axis =1 )
 
 scaled_numeric_x_2 = pd.DataFrame(scaler.fit_transform(numeric_x_2), columns = numeric_x_2.columns)
 
-x_2 = pd.concat((scaled_numeric_x_2,x_2[['BMI > 25', 'Sufficient']]),axis=1)
+x_2 = pd.concat((scaled_numeric_x_2,x_2[['Sufficient']]),axis=1)
  ```
  
  
@@ -614,7 +617,7 @@ vif_data.sort_values(by='VIF', ascending = False)
  ```
 <img src="images/vif_original dataset_2.png" width="400"/>
 
-There are some features that are highly correlated between them(above 5)
+There are some features that are highly correlated between them.
 
 ```python
 # vif for skew df
@@ -635,39 +638,35 @@ vif_data.sort_values(by='VIF', ascending = False)
 
 Again, this skewed dataset also has some features that are highly correlated between them.
 
-**So the problem may be here. I decided to remove those high multicolinear features**
+**So I decided to remove those high multicolinear features to see which datasets are better**
 
 
 ### Re-compare R2 after removing hight multicolinear
 
-Firstly, I did the scaling section again for both datasets again.
+This section again I did the testing. I checked manually which features are highly multicorrelated and infeasible by removing and comparing R2 score.
+
+At the end, I decided to remove these features
 ```python
 # Split datasets
-x_1 = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS", "TODO_COMPLETED", 
-                                    "SOCIAL_NETWORK", "FRUITS_VEGGIES","WEEKLY_MEDITATION",
-                                    "SUPPORTING_OTHERS", "PERSONAL_AWARDS"], axis=1)
+x_1 = df.drop(columns = ["WORK_LIFE_BALANCE_SCORE","TODO_COMPLETED","SOCIAL_NETWORK"], axis=1)
 y_1 = df.WORK_LIFE_BALANCE_SCORE
 
-x_2 = skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE", "SLEEP_HOURS_transformed", "ACHIEVEMENT_transformed", 
-                                    "SOCIAL_NETWORK", "FLOW_transformed","TODO_COMPLETED_transformed",
-                                    "FRUITS_VEGGIES", "TIME_FOR_PASSION_transformed", "WEEKLY_MEDITATION",
-                                    "SUPPORTING_OTHERS"], axis=1)
+x_2 = skewed_df.drop(columns = ["WORK_LIFE_BALANCE_SCORE","ACHIEVEMENT_transformed","FLOW_transformed"], axis=1)
 y_2 = skewed_df.WORK_LIFE_BALANCE_SCORE
 
 
 # Scaling original dateset
 scaler = MinMaxScaler()
 # fit the scaler to our data
-numeric_x_1 = x_1.drop(columns = ['BMI > 25', 'Sufficient'],axis =1 )
+numeric_x_1 = x_1.drop(columns = ['Sufficient'],axis =1 )
 scaled_numeric_x_1 = pd.DataFrame(scaler.fit_transform(numeric_x_1), columns = numeric_x_1.columns)
-x_1 = pd.concat((scaled_numeric_x_1,x_1[['BMI > 25', 'Sufficient']]),axis=1)
+x_1 = pd.concat((scaled_numeric_x_1,x_1[['Sufficient']]),axis=1)
 
 # Scaling skewed dateset
-scaler = MinMaxScaler()
 # fit the scaler to our data
-numeric_x_2 = x_2.drop(columns = ['BMI > 25', 'Sufficient'],axis =1 )
+numeric_x_2 = x_2.drop(columns = ['Sufficient'],axis =1 )
 scaled_numeric_x_2 = pd.DataFrame(scaler.fit_transform(numeric_x_2), columns = numeric_x_2.columns)
-x_2 = pd.concat((scaled_numeric_x_2,x_2[['BMI > 25', 'Sufficient']]),axis=1)
+x_2 = pd.concat((scaled_numeric_x_2,x_2[['Sufficient']]),axis=1)
  ```
  
  Then I compared their R2 Score
@@ -710,7 +709,7 @@ print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
  ```
  R squared of skewed dataset: 0.8958410485958109
  
-**=> I decided to use skewed dataset when it explained 90% of variation around its mean better than skewed dataset**.
+**=> I decided to use skewed dataset when it explained almost 90% of variation around its mean better than skewed dataset**.
 
 
 ### Chech Multivariate Normality
