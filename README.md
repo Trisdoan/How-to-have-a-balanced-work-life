@@ -805,6 +805,6 @@ According to the graph, I could suggest some following insights:
 1. As you can see, **Personal Awards** ranks highest, which means every personal achievement you get, you add nearly 28 point to the score. It is true, at least myself. Whenever I achieved something I am passionate about, it made my day. 
 2. At the second place, **Weekly mediation** and **Live vision** are almost the same. It can be interpreted as when you start to focus on innerself, that is when you feel good.
 
-=> After this analysis, I learned this: when I feel peace, happiness inside, that is the time I start 
+=> After this analysis, I learned this: happiness comes from inside ourselves. It happens only when I start to do somethig like mediatating, trying to find who I am,...And when those things become habits, I will be good even though in recession.
 
  
